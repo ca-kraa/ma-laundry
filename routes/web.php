@@ -34,3 +34,4 @@ Route::get('/paket/{id}/edit', [PaketController::class, 'edit'])->name('paket.ed
 Route::put('/paket/{id}/update', [PaketController::class, 'update'])->name('paket.update');
 Route::delete('/paket/{id}', [PaketController::class, 'destroy'])->name('paket.destroy');
 Route::put('/paket/change-status/{id}', [PaketController::class, 'changeStatus'])->name('paket.changeStatus');
+Route::get('/paket/filter', [PaketController::class, 'filter'])->name('paket.filter');

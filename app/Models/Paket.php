@@ -12,11 +12,11 @@ class paket extends Model
     use HasFactory;
     protected $table = 'pakets';
     protected $fillable = [
-        'konsumen', 'alamat', 'paket_kuota', 'berat', 'harga', 'pembayaran', 'total', 'cabang', 'status'
+        'konsumen', 'alamat', 'paket_kuota', 'berat', 'harga', 'pembayaran', 'total', 'cabang', 'status', 'created_at'
     ];
 
     public function konsumen()
     {
-        return $this->belongsTo(Konsumen::class, 'konsumen');
+        return $this->belongsTo(Konsumen::class, 'konsumen', 'nama_depan');
     }
 }

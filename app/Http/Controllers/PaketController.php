@@ -12,7 +12,9 @@ class PaketController extends Controller
     {
         $pakets = Paket::all();
         $konsumens = Konsumen::all();
-        return view('paket.index', compact('pakets', 'konsumens'));
+        $filteredPakets = $pakets;
+
+        return view('paket.index', compact('pakets', 'konsumens', 'filteredPakets'));
     }
 
     public function create()
@@ -34,11 +36,23 @@ class PaketController extends Controller
             'status' => 'nullable',
         ]);
 
-        $selectedKonsumenId = $validatedData['konsumen'];
-        $konsumen = Konsumen::findOrFail($selectedKonsumenId);
-        $alamat = $konsumen->alamat;
+        $selectedKonsumenNama = $validatedData['konsumen'];
+        $namaParts = explode(' ', $selectedKonsumenNama); // Pisahkan nama depan dan belakang
+        $namaDepan = $namaParts[0];
+        $namaBelakang = $namaParts[1];
 
-        $validatedData['alamat'] = $alamat;
+        $konsumen = Konsumen::where('nama_depan', $namaDepan)
+            ->where('nama_belakang', $namaBelakang)
+            ->first();
+
+        if ($konsumen) {
+            $alamat = $konsumen->alamat;
+            $validatedData['alamat'] = $alamat;
+            Paket::create($validatedData);
+            return redirect()->route('paket.index')->with('success', 'Data paket berhasil ditambahkan.');
+        } else {
+            return redirect()->back()->with('error', 'Konsumen tidak ditemukan.');
+        }
 
         Paket::create($validatedData);
 
@@ -86,5 +100,18 @@ class PaketController extends Controller
         $paket->save();
 
         return redirect()->route('paket.index')->with('success', 'Status berhasil diubah.');
+    }
+    public function filter(Request $request)
+    {
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
+        $filteredPakets = Paket::whereBetween('created_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59'])
+            ->get();
+
+        $konsumens = Konsumen::all();
+        $pakets = Paket::all();
+
+        return view('paket.index', compact('filteredPakets', 'konsumens', 'pakets'));
     }
 }

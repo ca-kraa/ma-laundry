@@ -40,6 +40,7 @@
 <script src="{{ asset('assets/AdminLTE') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{ asset('assets/AdminLTE') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="{{ asset('assets/AdminLTE') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 <script>
 $(document).ready(function () {
     var table1 = $("#example1").DataTable({
@@ -234,6 +235,39 @@ $(document).ready(function () {
         });
     });
 </script>
+
+<script>
+    function updateAlamat() {
+        var konsumenSelect = document.getElementById("konsumen");
+        var selectedOption = konsumenSelect.options[konsumenSelect.selectedIndex];
+        var alamatField = document.getElementById("alamat");
+
+        if (selectedOption && selectedOption.getAttribute("data-alamat")) {
+            var alamat = selectedOption.getAttribute("data-alamat");
+            alamatField.value = alamat;
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterForm = document.getElementById('filterForm');
+        const fromDateInput = document.getElementById('fromDate');
+        const toDateInput = document.getElementById('toDate');
+
+        filterForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const fromDateString = fromDateInput.value;
+            const toDateString = toDateInput.value;
+
+            const url = "{{ route('paket.filter') }}?start_date=" + fromDateString + "&end_date=" + toDateString;
+
+            window.location.href = url;
+        });
+    });
+</script>
+
 
 
 </body>
